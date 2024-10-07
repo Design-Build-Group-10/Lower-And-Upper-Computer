@@ -118,7 +118,7 @@ int initCamera()
 void setup() //程序加电后初始化
 {
 //  Serial.begin(115200);
-  Serial1.begin(115200, SERIAL_8N1, 3, 1); //设置串口1,用于向机器人主体芯片发送指令 ，3为rx,1为tx
+  Serial1.begin(115200, SERIAL_8N1, 3, 1); //设置串口1,用于向机器人主体芯片发送指令, 3为rx, 1为tx
 
   Serial.setDebugOutput(true);
  
@@ -165,14 +165,14 @@ void setup() //程序加电后初始化
   digitalWrite(4, LOW); // turn the LED off by making the voltage LOW
 
   //用于视频传输
-  xTaskCreate(
-    taskOne,
-    "TaskOne",
-    10000,
-    NULL,
-    1,
-    NULL
-  );
+  // xTaskCreate(
+  //   taskOne,
+  //   "TaskOne",
+  //   10000,
+  //   NULL,
+  //   1,
+  //   NULL
+  // );
 
   //用于串口通信
   xTaskCreate(
@@ -185,64 +185,74 @@ void setup() //程序加电后初始化
   );
 }
 
-void loop() {
+
+void loop() 
+{
 
 }
 
 
-
-void taskOne(void *parameter) {
-
-  while (1) {
-
-    if (udp.connect(IPAddress(192, 168, 4, 2), 10000)) //检查网络连接是否存在,这取决于上位机是否连接,这里条件是如果有连接则处理,否则进入下一次loop.
-    {
-      camera_fb_t *fb = NULL;
-      fb = esp_camera_fb_get(); //拍照
-      if (!fb)                  //拍照不成功时重新拍照
-      {
-        Serial.println("Camera capture failed");
-        return;
-      }
-      uint8_t *P_temp = fb->buf;                            //暂存指针初始位置
-      int pic_length = fb->len;                             //获取图片字节数量
-      int pic_pack_quantity = pic_length / max_packet_byte; //将图片分包时可以分几个整包
-      int remine_byte = pic_length % max_packet_byte;       //余值,即最后一个包的大小
-
-      udp.print("ok");                            //向上位机发送一个字符串"ok"表示开始发送信息,这也是第一个包,包的内容是字符串,即只有2个字节.虽然是二进制发送,但对方可以方便地转为ASCII字符
-      udp.print(pic_length);                      //向上位机发送这个图片的大小,这个包也是用字符串发送,即每个字符占一个字节
-      for (int j = 0; j < pic_pack_quantity; j++) //发送图片信息,这是按分包循环发送,每一次循环发送一个包,包的大小就是上面指定的1024个字节.
-      {
-        udp.write(fb->buf, max_packet_byte); //将图片分包发送
-        for (int i = 0; i < max_packet_byte; i++)
-        {
-          fb->buf++; //图片内存指针移动到相应位置
-        }
-      }
-      udp.write(fb->buf, remine_byte); //发送最后一个包，剩余的数据
-
-      fb->buf = P_temp;         //将当时保存的指针重新返还最初位置
-      esp_camera_fb_return(fb); //清理像机
-
-    }
-    delay(100);
-  }
-
-}
+// void taskOne(void *parameter) 
+// {
+//   while (1) 
+//   {
+//     if (udp.connect(IPAddress(192, 168, 4, 2), 10000)) //检查网络连接是否存在,这取决于上位机是否连接,这里条件是如果有连接则处理,否则进入下一次loop.
+//     {
+//       camera_fb_t *fb = NULL;
+//       fb = esp_camera_fb_get(); //拍照
+//       if (!fb)                  //拍照不成功时重新拍照
+//       {
+//         Serial.println("Camera capture failed");
+//         return;
+//       }
+//       uint8_t *P_temp = fb->buf;                            //暂存指针初始位置
+//       int pic_length = fb->len;                             //获取图片字节数量
+//       int pic_pack_quantity = pic_length / max_packet_byte; //将图片分包时可以分几个整包
+//       int remine_byte = pic_length % max_packet_byte;       //余值,即最后一个包的大小
+//       udp.print("ok");                            //向上位机发送一个字符串"ok"表示开始发送信息,这也是第一个包,包的内容是字符串,即只有2个字节.虽然是二进制发送,但对方可以方便地转为ASCII字符
+//       udp.print(pic_length);                      //向上位机发送这个图片的大小,这个包也是用字符串发送,即每个字符占一个字节
+//       for (int j = 0; j < pic_pack_quantity; j++) //发送图片信息,这是按分包循环发送,每一次循环发送一个包,包的大小就是上面指定的1024个字节.
+//       {
+//         udp.write(fb->buf, max_packet_byte); //将图片分包发送
+//         for (int i = 0; i < max_packet_byte; i++)
+//         {
+//           fb->buf++; //图片内存指针移动到相应位置
+//         }
+//       }
+//       udp.write(fb->buf, remine_byte); //发送最后一个包，剩余的数据
+//       fb->buf = P_temp;         //将当时保存的指针重新返还最初位置
+//       esp_camera_fb_return(fb); //清理像机
+//     }
+//     delay(100);
+//   }
+// }
 
 
-void taskTwo(void *parameter) {
-  while (1) {
-    // 发送信息到 Serial1
-    String command = "HELLO";
-    Serial1.println(command); // 发送命令到机器人主体芯片
-    Serial.println("Sent command: " + command); // 在调试串口上打印发送的命令
+void taskTwo(void *parameter) 
+{
+  while (1) 
+  {
+    // 发送测试信息到 Serial1
+    // String command = "HELLO";
+    // Serial1.println(command); // 发送命令到机器人主体芯片
+    // Serial.println("Sent command: " + command); // 在调试串口上打印发送的命令
 
     // 检查是否有来自 Serial1 的数据
     // if (Serial1.available()) {
     //   String response = Serial1.readStringUntil('\n'); // 读取直到换行符
     //   Serial.println("Received response: " + response); // 在调试串口上打印收到的响应
     // }
+    
+    camera_fb_t *fb = NULL;
+    fb = esp_camera_fb_get(); //拍照
+    if (!fb)                  //拍照不成功时重新拍照
+    {
+      Serial.println("Camera capture failed");
+      return;
+    }
+    
+    Serial1.write(fb->buf, fb->len); //将图片发送到串口1
+    esp_camera_fb_return(fb); //清理像机
 
     delay(100);
   }
