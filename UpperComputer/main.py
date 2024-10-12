@@ -8,7 +8,7 @@ import websockets
 
 # 设置UDP服务器地址和端口
 UDP_IP = "0.0.0.0"  # 使用0.0.0.0来监听所有网络接口
-UDP_PORT = 10000
+UDP_PORT = 12345  # 与单片机的remotePort一致
 MAX_PACKET_SIZE = 1024
 
 # 创建UDP套接字

@@ -5,8 +5,8 @@
 
 AsyncUDP udp;
 
-const char *ssid = "10组CAM";
-const char *password = "87654321";
+const char *ssid = "Frost";
+const char *password = "waouwaou";
 
 
 //.......................................................//
@@ -104,14 +104,14 @@ int initCamera()
   esp_err_t err = esp_camera_init(&config);
   if (err != ESP_OK)
   {
-    Serial.printf("Camera init failed with error 0x%x", err);
+    Serial1.printf("Camera init failed with error 0x%x", err);
     return 1;
   }
 
   sensor_t *s = esp_camera_sensor_get();
   s->set_vflip(s, 1); //no flip it back
 
-  Serial.println("Camera Init OK!!!");
+  Serial1.println("Camera Init OK!!!");
   return 0;
 }
 
@@ -120,15 +120,21 @@ void setup() //程序加电后初始化
 //  Serial.begin(115200);
   Serial1.begin(115200, SERIAL_8N1, 3, 1); //设置串口1,用于向机器人主体芯片发送指令, 3为rx, 1为tx
 
-  Serial.setDebugOutput(true);
+  Serial1.setDebugOutput(true);
  
 
 
-  WiFi.mode(WIFI_AP);                  //wifi初始化
-  while (!WiFi.softAP(ssid, password)) //启动AP
+  WiFi.mode(WIFI_STA);                  //wifi初始化
+  WiFi.begin(ssid, password); //连接到指定的WiFi网络
+  while (WiFi.status() != WL_CONNECTED) //等待连接成功
   {
+    delay(1000);
+    Serial1.println("正在连接到WiFi...");
+    Serial1.println(WiFi.status());
   }
-  Serial.println("AP启动成功");
+  
+  Serial1.println("WiFi连接成功");
+
   while (!udp.listen(10001)) //等待本机udp监听端口设置成功
   {
   }
@@ -136,18 +142,14 @@ void setup() //程序加电后初始化
   udp.onPacket([](AsyncUDPPacket packet) { //注册一个数据包接收事件，可异步接收数据
     String curCommand = String((const char*)packet.data()).substring(0, packet.length());
 
-    Serial.println("收到命令:" + curCommand);
+    Serial1.println("收到命令:" + curCommand);
 
     if (curCommand.equals("ledon")) {
       digitalWrite(4, HIGH);
     } else if (curCommand.equals("ledoff")) {
       digitalWrite(4, LOW);
     } else  {
-      //Serial1.println(curCommand); //向串口1发送其他操作命令
-      //byte sendcmd = curCommand.charAt(0);
-      //Serial.write(&sendcmd,sizeof(sendcmd));
-      Serial.println(curCommand);
-      //Serial.println("12345");
+      Serial1.println(curCommand);
       delay(20);
     }
 
@@ -202,7 +204,7 @@ void taskOne(void *parameter)
       fb = esp_camera_fb_get(); //拍照
       if (!fb)                  //拍照不成功时重新拍照
       {
-        Serial.println("Camera capture failed");
+        Serial1.println("Camera capture failed");
         return;
       }
       uint8_t *P_temp = fb->buf;                            //暂存指针初始位置
@@ -232,7 +234,6 @@ void taskTwo(void *parameter)
     // 发送测试信息到 Serial1
     String command = "HELLO";
     Serial1.println(command); // 发送命令到机器人主体芯片
-    Serial.println("Sent command: " + command); // 在调试串口上打印发送的命令
     delay(3000); // 等待 3 秒
 
     // 检查是否有来自 Serial1 的数据
