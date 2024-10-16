@@ -198,7 +198,7 @@ void taskOne(void *parameter)
 {
   while (1) 
   {
-    if (udp.connect(IPAddress(192, 168, 4, 2), 10000)) //检查网络连接是否存在,这取决于上位机是否连接,这里条件是如果有连接则处理,否则进入下一次loop.
+    if (udp.connect(IPAddress(192, 168, 28, 93), 10000)) //检查网络连接是否存在,这取决于上位机是否连接,这里条件是如果有连接则处理,否则进入下一次loop.
     {
       camera_fb_t *fb = NULL;
       fb = esp_camera_fb_get(); //拍照
@@ -222,7 +222,7 @@ void taskOne(void *parameter)
       fb->buf = P_temp;         //将当时保存的指针重新返还最初位置
       esp_camera_fb_return(fb); //清理像机
     }
-    delay(50);
+    delay(400);
   }
 }
 
