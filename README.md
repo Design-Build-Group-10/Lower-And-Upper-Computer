@@ -1,5 +1,15 @@
 # Design & Build - Group 10 - Lower Computer and Upper Computer Code Repository
 
+Visit [FacePerks](https://service.design-build.site) (https://service.design-build.site) to view the live demo and
+explore its features.
+
+To view the full project, please visit the following repositories:
+
+- [Server (Backend) Code](https://github.com/Design-Build-Group-10/Server) (https://github.com/Design-Build-Group-10/Server)
+- [Web Client (Frontend) Code](https://github.com/Design-Build-Group-10/Web-Client) (https://github.com/Design-Build-Group-10/Web-Client)
+- [Upper and Lower Computer Code](https://github.com/Design-Build-Group-10/Lower-And-Upper-Computer) (https://github.com/Design-Build-Group-10/Lower-And-Upper-Computer)
+- [Face Recognition Code](https://github.com/Design-Build-Group-10/FaceRecognition) (https://github.com/Design-Build-Group-10/FaceRecognition)
+
 ## Table of Contents
 
 1. [Introduction](#introduction)
