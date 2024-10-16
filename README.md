@@ -1,21 +1,36 @@
-# 下位机和上位机的代码仓库
+# Design & Build - Group 10 - Lower Computer and Upper Computer Code Repository
 
-## 1.简介
-- 串口法, 作为备用方案, 旨在解决没有两个网卡时的完整功能实现 (传输图像和控制运动)
-- 两块单片机是下位机, 分别是CAM和WROOM
-- 单片机之间的通信用串口(CAM向WROOM发送简单的指令控制运动), CAM与上位机的通信用UDP(CAM向上位机发送图片流)
+## Table of Contents
 
-## 2.运行
-#### 2.1 烧录
-- ESP32_CAM.ino 烧录进蜘蛛头部摄像头所在的单片机
-- ESP32_WROOM.ino 烧录进蜘蛛背部的单片机
-#### 2.2 接线
-- 接线: CAM的RX引脚连接蜘蛛后背的17号IO口的S引脚, CAM的TX引脚连接蜘蛛后背的16号IO口的S引脚
-#### 2.3 测试
-- WROOM单片机用USB线连接至电脑, 在 Arduino IDE 右上角串口监视器可看到CAM向WROOM发来的测试信息HELLO
-- 电脑连接WIFI: "10组CAM", 密码"87654321"
-- 电脑设置IPv4: 
-  - 地址: 192.168.4.2 
-  - 掩码: 0.0.0.0
-- 网络设置完毕后运行python程序可以在窗口中看到CAM发来的图片流
-- 由于目前串口尚未设置控制指令, 蜘蛛动作控制由手机APP实现, 手机连接WIFI"10组小蜘蛛", 密码"87654321", 在"四足机器蜘蛛"软件中控制
+1. [Introduction](#introduction)
+2. [Operation](#operation)
+   - [Flashing](#21-flashing)
+   - [Wiring](#22-wiring)
+   - [Testing](#23-testing)
+
+## 1. Introduction
+
+- The serial communication method is used as a backup solution to achieve full functionality (transmitting images and controlling movements) when there are not two network interfaces available.
+- Two microcontrollers serve as the lower computers: CAM and WROOM.
+- Communication between the microcontrollers is through serial (CAM sends simple commands to WROOM to control movements), while communication between CAM and the upper computer is through UDP (CAM sends image streams to the upper computer).
+
+## 2. Operation
+
+### 2.1 Flashing
+
+- Flash `ESP32_CAM.ino` onto the microcontroller located in the spider’s head, which has the camera.
+- Flash `ESP32_WROOM.ino` onto the microcontroller located on the spider's back.
+
+### 2.2 Wiring
+
+- Wiring: Connect the RX pin of CAM to the S pin of IO port 17 on the back of the spider, and the TX pin of CAM to the S pin of IO port 16 on the back of the spider.
+
+### 2.3 Testing
+
+- Connect the WROOM microcontroller to the computer using a USB cable. In the Arduino IDE’s Serial Monitor, you should see test information “HELLO” sent from CAM to WROOM.
+- Connect your computer to the WiFi network: **"10组CAM"**, with the password **"87654321"**.
+- Set the computer’s IPv4 settings:
+  - Address: **192.168.4.2**
+  - Subnet Mask: **0.0.0.0**
+- Once the network settings are configured, you can run the Python program to see the image stream sent from CAM in the window.
+- Since the serial port control instructions are not yet set up, spider motion control is currently handled via a mobile app. Connect the phone to the WiFi **"10组小蜘蛛"**, with the password **"87654321"**, and control the spider using the **"Quadruped Robot Spider"** app.
